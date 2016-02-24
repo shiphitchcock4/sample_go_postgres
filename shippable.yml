@@ -2,29 +2,47 @@ language: go
 
 go:
   - 1.2
+  - 1.3
+  - 1.1
+services:
+  - postgres
 
 # Addons used by app
-addons:
-  postgresql: "9.3"
+#addons:
+ # postgresql: "9.3"
 
 env:
   - CI_REPORT=shippable/testresults/junit.xml
 
-before_install:
-  - go get github.com/lib/pq
-  - go get github.com/t-yuki/gocover-cobertura
-  - go get github.com/onsi/gomega
-  - go get github.com/onsi/ginkgo
-  - go get code.google.com/p/go.tools/cmd/cover
-  - mkdir -p $GOPATH/src/github.com/Shippable
-  - ln -sfn $PWD $GOPATH/src/github.com/Shippable/sample_go
+#before_install:
+  #- go get github.com/lib/pq
+  #- go get github.com/t-yuki/gocover-cobertura
+  #- go get github.com/onsi/gomega
+  #- go get github.com/onsi/ginkgo
+  #- go get code.google.com/p/go.tools/cmd/cover
+  #- mkdir -p $GOPATH/src/github.com/Shippable
+ # - ln -sfn $PWD $GOPATH/src/github.com/Shippable/sample_go
 
 # Make folders for the reports
-before_script:
-  - mkdir -p shippable/testresults
-  - mkdir -p shippable/codecoverage
-  - psql -c 'CREATE DATABASE test;' -U postgres
+#before_script:
+  #- mkdir -p shippable/testresults
+  #- mkdir -p shippable/codecoverage
+  #- psql -c 'CREATE DATABASE test;' -U postgres
 
-script:
-  - go test -coverprofile=coverage.txt -covermode count ./
-  - $GOPATH/bin/gocover-cobertura < coverage.txt > shippable/codecoverage/coverage.xml
+#script:
+ # - go test -coverprofile=coverage.txt -covermode count ./
+  #- $GOPATH/bin/gocover-cobertura < coverage.txt > shippable/codecoverage/coverage.xml
+build:
+  ci:
+    - go get github.com/lib/pq
+    - go get github.com/t-yuki/gocover-cobertura
+    - go get github.com/onsi/gomega
+    - go get github.com/onsi/ginkgo
+    - go get code.google.com/p/go.tools/cmd/cover
+    - mkdir -p $GOPATH/src/github.com/Shippable
+    - ln -sfn $PWD $GOPATH/src/github.com/Shippable/sample_go
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+    - psql -c 'CREATE DATABASE test;' -U postgres
+    - go test -coverprofile=coverage.txt -covermode count ./
+    - $GOPATH/bin/gocover-cobertura < coverage.txt > shippable/codecoverage/coverage.xml
